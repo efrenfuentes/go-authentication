@@ -6,9 +6,10 @@ import (
 
 	"github.com/efrenfuentes/go-authentication/core/settings"
 	"github.com/efrenfuentes/go-authentication/routers"
+	"github.com/efrenfuentes/go-authentication/core/utils"
 	"os"
 	"net/http"
-	"net/http/httptest"
+
 	"fmt"
 	"github.com/gorilla/mux"
 	"encoding/json"
@@ -24,45 +25,35 @@ var _ = Describe("Hello Controller", func() {
 	})
 
 	It("Calling /api/v1/hello", func() {
-		req, err := http.NewRequest("GET", "/api/v1/hello", nil)
+		var jsonResponse interface{}
 
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		w := httptest.NewRecorder()
-
-		router.ServeHTTP(w, req)
+		w := utils.MakeRequest("GET", "/api/v1/hello", nil, router)
 
 		Expect(w.Code).To(Equal(http.StatusOK))
 
-		var jsonResponse interface{}
-		err = json.Unmarshal([]byte(w.Body.String()), &jsonResponse)
+		err := json.Unmarshal([]byte(w.Body.String()), &jsonResponse)
+
 		if err != nil {
 			fmt.Println(err)
 		}
+
 		responseMap := jsonResponse.(map[string]interface{})
 		Expect(responseMap["message"]).To(Equal("Hello, World!"))
 	})
 
 	It("Calling /api/v1/hello/{name}", func() {
-		req, err := http.NewRequest("GET", "/api/v1/hello/Jhon", nil)
+		var jsonResponse interface{}
 
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		w := httptest.NewRecorder()
-
-		router.ServeHTTP(w, req)
+		w := utils.MakeRequest("GET", "/api/v1/hello/Jhon", nil, router)
 
 		Expect(w.Code).To(Equal(http.StatusOK))
 
-		var jsonResponse interface{}
-		err = json.Unmarshal([]byte(w.Body.String()), &jsonResponse)
+		err := json.Unmarshal([]byte(w.Body.String()), &jsonResponse)
+
 		if err != nil {
 			fmt.Println(err)
 		}
+
 		responseMap := jsonResponse.(map[string]interface{})
 		Expect(responseMap["message"]).To(Equal("Hello, Jhon"))
 	})
