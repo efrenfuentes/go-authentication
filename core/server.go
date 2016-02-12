@@ -2,7 +2,7 @@ package core
 
 import (
 	"github.com/efrenfuentes/go-authentication/routers"
-	"github.com/efrenfuentes/go-utils/settings"
+	"github.com/efrenfuentes/go-authentication/core/settings"
 	"net/http"
 	"fmt"
 )
@@ -19,8 +19,10 @@ func (s *Server) Run() {
 
 	listen_in := ip + ":" + port
 
-	fmt.Println("Starting server in " + listen_in)
-	http.Handle("/", routes)
+	fmt.Printf("Starting server in %s [%s]\n",
+		listen_in,
+		settings.GetEnvironment())
 
+	http.Handle("/", routes)
 	http.ListenAndServe(listen_in, nil)
 }
