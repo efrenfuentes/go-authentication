@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"github.com/efrenfuentes/go-authentication/routers"
@@ -7,7 +7,9 @@ import (
 	"fmt"
 )
 
-func main() {
+type Server struct {}
+
+func (s *Server) Run() {
 	settings.Init()
 	routes := routers.InitRoutes()
 
