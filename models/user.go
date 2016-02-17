@@ -4,7 +4,20 @@ import (
 	"time"
 	"regexp"
 	"errors"
+	"github.com/efrenfuentes/go-authentication/core/crypt"
+	"math/rand"
 )
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func randStringBytes(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
+}
 
 type User struct {
 	ID        uint
@@ -17,7 +30,7 @@ type User struct {
 }
 
 func (u *User)SetPassword(password string) {
-	u.encrypt_password = password
+	u.encrypt_password = crypt.Crypt(password, randStringBytes(2))
 }
 
 func (u *User)SetEmail(email string) error {
@@ -37,5 +50,9 @@ func (u User)GetEmail() string {
 }
 
 func (u User)Authenticate(email, password string) bool {
-	return false
+	salt := u.encrypt_password[0:2]
+
+	encrypted := crypt.Crypt(password, salt)
+
+	return (email == u.email) && (encrypted == u.encrypt_password)
 }

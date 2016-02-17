@@ -45,4 +45,15 @@ var _ = Describe("User Model", func() {
 			Expect(user.GetEmail()).To(Equal(before_email))
 		}
 	})
+
+	It("Authenticate", func() {
+		var user *models.User
+		user = new(models.User)
+
+		user.SetEmail("someuser@sample.com")
+		user.SetPassword("1234567890")
+
+		Expect(user.Authenticate("someuser@sample.com", "1234567890")).To(BeTrue())
+		Expect(user.Authenticate("someuser@sample.com", "0987654321")).NotTo(BeTrue())
+	})
 })
