@@ -16,7 +16,7 @@ func SetRoute(router *mux.Router, path, name, method string, handlerFunc func(w 
 	return router
 }
 
-func InitRoutes() *mux.Router {
+func Init() *mux.Router {
 	router := mux.NewRouter()
 	router = SetHelloRoutes(router)
 	return router

@@ -11,7 +11,7 @@ type Server struct {}
 
 func (s *Server) Run() {
 	settings.Init()
-	routes := routers.InitRoutes()
+	routes := routers.Init()
 
 	mySettings := settings.Get()
 	ip := mySettings["server"].(map[string]interface{})["ip"].(string)
