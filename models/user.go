@@ -20,17 +20,17 @@ func randStringBytes(n int) string {
 }
 
 type User struct {
-	ID        uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID               uint
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 
 	Name             string
-	email            string
-	encrypt_password string
+	Email            string
+	EncryptPassword  string
 }
 
 func (u *User)SetPassword(password string) {
-	u.encrypt_password = crypt.Crypt(password, randStringBytes(2))
+	u.EncryptPassword = crypt.Crypt(password, randStringBytes(2))
 }
 
 func (u *User)SetEmail(email string) error {
@@ -38,21 +38,17 @@ func (u *User)SetEmail(email string) error {
 	isValid := Re.MatchString(email)
 
 	if isValid {
-		u.email = email
+		u.Email = email
 		return nil
 	} else {
 		return errors.New("Email format is invalid " + email)
 	}
 }
 
-func (u User)GetEmail() string {
-	return u.email
-}
-
 func (u User)Authenticate(email, password string) bool {
-	salt := u.encrypt_password[0:2]
+	salt := u.EncryptPassword[0:2]
 
 	encrypted := crypt.Crypt(password, salt)
 
-	return (email == u.email) && (encrypted == u.encrypt_password)
+	return (email == u.Email) && (encrypted == u.EncryptPassword)
 }

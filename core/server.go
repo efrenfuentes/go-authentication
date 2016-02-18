@@ -1,16 +1,19 @@
 package core
 
 import (
-	"github.com/efrenfuentes/go-authentication/routers"
-	"github.com/efrenfuentes/go-authentication/core/settings"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	"github.com/efrenfuentes/go-authentication/core/settings"
+	"github.com/efrenfuentes/go-authentication/database"
+	"github.com/efrenfuentes/go-authentication/routers"
 )
 
-type Server struct {}
+type Server struct{}
 
 func (s *Server) Run() {
 	settings.Init()
+	database.Init(settings.Get()["database"].(map[string]interface{}))
 	routes := routers.Init()
 
 	mySettings := settings.Get()

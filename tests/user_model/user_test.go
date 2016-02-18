@@ -21,7 +21,7 @@ var _ = Describe("User Model", func() {
 
 			Expect(err).To(BeNil())
 
-			Expect(email).To(Equal(user.GetEmail()))
+			Expect(email).To(Equal(user.Email))
 		}
 	})
 
@@ -36,13 +36,13 @@ var _ = Describe("User Model", func() {
 			                       "foo@bar..com"}
 
 		for _, email := range invalid_emails {
-			before_email := user.GetEmail()
+			before_email := user.Email
 
 			err := user.SetEmail(email)
 
 			Expect(err).NotTo(BeNil())
 
-			Expect(user.GetEmail()).To(Equal(before_email))
+			Expect(user.Email).To(Equal(before_email))
 		}
 	})
 
