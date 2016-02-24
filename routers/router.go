@@ -1,12 +1,13 @@
 package routers
 
 import (
+	"net/http"
+
 	"github.com/efrenfuentes/go-authentication/core/logger"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
-func SetRoute(router *mux.Router, path, name, method string, handlerFunc func(w http.ResponseWriter, r *http.Request) ) *mux.Router {
+func SetRoute(router *mux.Router, path, name, method string, handlerFunc func(w http.ResponseWriter, r *http.Request)) *mux.Router {
 	var handler http.HandlerFunc
 
 	handler = handlerFunc
@@ -18,6 +19,6 @@ func SetRoute(router *mux.Router, path, name, method string, handlerFunc func(w 
 
 func Init() *mux.Router {
 	router := mux.NewRouter()
-	router = SetHelloRoutes(router)
+	router = SetUsersRoutes(router)
 	return router
 }

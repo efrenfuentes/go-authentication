@@ -1,11 +1,12 @@
 package models
 
 import (
-	"time"
-	"regexp"
 	"errors"
-	"github.com/efrenfuentes/go-authentication/core/crypt"
 	"math/rand"
+	"regexp"
+	"time"
+
+	"github.com/efrenfuentes/go-authentication/core/crypt"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -20,20 +21,26 @@ func randStringBytes(n int) string {
 }
 
 type User struct {
-	ID               uint
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	ID        uint
+	CreatedAt *time.Time `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at"`
 
-	Name             string
-	Email            string
-	EncryptPassword  string
+	Name            string `json:"name"`
+	Email           string `json:"email"`
+	EncryptPassword string `json:"-"`
 }
 
-func (u *User)SetPassword(password string) {
+type NewUser struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (u *User) SetPassword(password string) {
 	u.EncryptPassword = crypt.Crypt(password, randStringBytes(2))
 }
 
-func (u *User)SetEmail(email string) error {
+func (u *User) SetEmail(email string) error {
 	Re := regexp.MustCompile(`^\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3}$`)
 	isValid := Re.MatchString(email)
 
@@ -45,7 +52,7 @@ func (u *User)SetEmail(email string) error {
 	}
 }
 
-func (u User)Authenticate(email, password string) bool {
+func (u User) Authenticate(email, password string) bool {
 	salt := u.EncryptPassword[0:2]
 
 	encrypted := crypt.Crypt(password, salt)
