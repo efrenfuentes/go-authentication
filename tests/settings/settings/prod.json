@@ -1,0 +1,5 @@
+{
+  "Application": "Name of Application",
+  "Version": 1,
+  "Array": ["Element 1", "Element 2"]
+}
