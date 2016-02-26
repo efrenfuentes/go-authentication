@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/efrenfuentes/go-authentication/core/jwt"
 	"github.com/efrenfuentes/go-authentication/database"
 	"github.com/efrenfuentes/go-authentication/models"
 	"github.com/gorilla/mux"
@@ -129,6 +130,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 					json.NewEncoder(w).Encode(message)
 				} else {
+
 					json.NewEncoder(w).Encode(user)
 				}
 			}
@@ -191,7 +193,9 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(message)
 		} else {
 			if user.Authenticate(newUser.Email, newUser.Password) {
-				json.NewEncoder(w).Encode(user)
+				token := jwt.CreateToken(user)
+				apiToken := jwt.APIToken{token}
+				json.NewEncoder(w).Encode(apiToken)
 			} else {
 				message := models.APIMessage{"Email or password invalid"}
 

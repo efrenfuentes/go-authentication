@@ -8,5 +8,9 @@
     "database": "go_auth_test",
     "user": "root",
     "password": "admin"
+  },
+  "jwt": {
+    "privateKey": "keys/key.rsa",
+    "publicKey": "keys/key.rsa.pub"
   }
 }

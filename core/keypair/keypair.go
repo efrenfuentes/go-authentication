@@ -1,4 +1,13 @@
-// Package keypair generates private and public RSA keys
+/*
+ *
+ * Generates a private/public key pair in PEM format (not Certificate)
+ *
+ * The generated private key can be parsed with openssl as follows:
+ * > openssl rsa -in key.pem -text
+ *
+ * The generated public key can be parsed as follows:
+ * > openssl rsa -pubin -in pub.pem -text
+ */
 package keypair
 
 import (
@@ -6,11 +15,22 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
+	"io/ioutil"
 )
 
-// GenerateKeys generates private and public RSA keys
-func GenerateKeys(bits int) (string, string) {
-	priv, _ := rsa.GenerateKey(rand.Reader, bits)
+func GenerateKeys(filename string, bits int) {
+	// priv *rsa.PrivateKey;
+	// err error;
+	priv, err := rsa.GenerateKey(rand.Reader, bits)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = priv.Validate()
+	if err != nil {
+		fmt.Println("Validation failed.", err)
+	}
 
 	// Get der format. priv_der []byte
 	privDer := x509.MarshalPKCS1PrivateKey(priv)
@@ -23,10 +43,16 @@ func GenerateKeys(bits int) (string, string) {
 
 	// Resultant private key in PEM format.
 	privPem := string(pem.EncodeToMemory(&privBlk))
+	ioutil.WriteFile(filename, []byte(privPem), 0644)
+	// fmt.Printf(privPem)
 
 	// Public Key generation
 	pub := priv.PublicKey
-	pubDer, _ := x509.MarshalPKIXPublicKey(&pub)
+	pubDer, err := x509.MarshalPKIXPublicKey(&pub)
+	if err != nil {
+		fmt.Println("Failed to get der format for PublicKey.", err)
+		return
+	}
 
 	pubBlk := pem.Block{
 		Type:    "PUBLIC KEY",
@@ -36,6 +62,6 @@ func GenerateKeys(bits int) (string, string) {
 
 	// Resultant public key in PEM format.
 	pubPem := string(pem.EncodeToMemory(&pubBlk))
-
-	return privPem, pubPem
+	ioutil.WriteFile(filename+".pub", []byte(pubPem), 0644)
+	// fmt.Printf(pubPem)
 }
