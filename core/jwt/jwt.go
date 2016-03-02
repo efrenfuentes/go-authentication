@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"io/ioutil"
+	"net/http"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -38,16 +39,23 @@ func CreateToken(user models.User) string {
 	return tokenString
 }
 
-func ValidateToken(tokenString string) *jwt.Token {
-	jwtSettings := settings.Get()["jwt"].(map[string]interface{})
+func JWTTokenAuthentication(inner http.Handler) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		jwtSettings := settings.Get()["jwt"].(map[string]interface{})
 
-	keyfile := jwtSettings["publicKey"].(string)
+		keyfile := jwtSettings["publicKey"].(string)
 
-	publicKey, _ := ioutil.ReadFile(keyfile)
+		publicKey, _ := ioutil.ReadFile(keyfile)
 
-	token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return publicKey, nil
+		token, err := jwt.ParseFromRequest(r,
+			func(token *jwt.Token) (interface{}, error) {
+				return publicKey, nil
+			})
+
+		if err == nil && token.Valid {
+			inner.ServeHTTP(w, r)
+		} else {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
 	})
-
-	return token
 }
