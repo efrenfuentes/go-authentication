@@ -13,6 +13,7 @@ type Group struct {
 	Description     string `json:"description"`
 	Users           []User `gorm:"many2many:user_groups;"  json:"-"`
 	Clients         []Client `gorm:"many2many:client_groups;"  json:"-"`
+	Abilities       []Ability `gorm:"many2many:ability_groups;"  json:"-"`
 }
 
 type NewGroup struct {

@@ -69,4 +69,18 @@ func migrations() {
 
 		Database.Model(&client).Association("Groups").Append(group)
 	}
+
+	// Ability
+	Database.AutoMigrate(&models.Ability{})
+	Database.Model(&models.Ability{}).AddUniqueIndex("idx_ability_name", "name")
+
+	ability := models.Ability{}
+	Database.Where("name = ?", "all").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "All"
+		Database.Create(&ability)
+
+		Database.Model(&ability).Association("Groups").Append(group)
+	}
 }
