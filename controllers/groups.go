@@ -122,14 +122,7 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 
 				database.Database.Save(&group)
 
-				if database.Database.NewRecord(group) {
-					message := models.APIMessage{"Error updating group"}
-
-					json.NewEncoder(w).Encode(message)
-				} else {
-
-					json.NewEncoder(w).Encode(group)
-				}
+				json.NewEncoder(w).Encode(group)
 			}
 		}
 	}

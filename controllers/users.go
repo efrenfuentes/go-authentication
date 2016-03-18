@@ -125,14 +125,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 				database.Database.Save(&user)
 
-				if database.Database.NewRecord(user) {
-					message := models.APIMessage{"Error updating user"}
-
-					json.NewEncoder(w).Encode(message)
-				} else {
-
-					json.NewEncoder(w).Encode(user)
-				}
+				json.NewEncoder(w).Encode(user)
 			}
 		}
 	}
