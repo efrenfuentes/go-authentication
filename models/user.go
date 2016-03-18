@@ -17,7 +17,7 @@ type User struct {
 	Email           string `json:"email"`
 	EncryptPassword string `json:"-"`
 
-	Groups          []Group `gorm:"many2many:user_groups;"   json:"-"`
+	Groups          []Group `gorm:"many2many:user_groups;"   json:"groups"`
 }
 
 type NewUser struct {

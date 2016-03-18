@@ -17,7 +17,7 @@ func GetAllClients(w http.ResponseWriter, r *http.Request) {
 
 	clients := []models.Client{}
 
-	database.Database.Find(&clients)
+	database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&clients)
 
 	json.NewEncoder(w).Encode(clients)
 }
@@ -35,7 +35,7 @@ func GetClient(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.First(&client, id)
+		database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&client, id)
 
 		if client.ID == 0 {
 			message := models.APIMessage{"Client not found"}

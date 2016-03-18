@@ -17,7 +17,7 @@ func GetAllGroups(w http.ResponseWriter, r *http.Request) {
 
 	groups := []models.Group{}
 
-	database.Database.Find(&groups)
+	database.Database.Preload("Users").Preload("Clients").Preload("Abilities").Find(&groups)
 
 	json.NewEncoder(w).Encode(groups)
 }
@@ -35,7 +35,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.First(&group, id)
+		database.Database.Preload("Users").Preload("Clients").Preload("Abilities").First(&group, id)
 
 		if group.ID == 0 {
 			message := models.APIMessage{"Group not found"}

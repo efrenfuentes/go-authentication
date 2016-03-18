@@ -8,7 +8,7 @@ type Ability struct {
 	UpdatedAt *time.Time `json:"updated_at"`
 
 	Name            string `json:"name"`
-	Groups          []Group `gorm:"many2many:ability_groups;"  json:"-"`
+	Groups          []Group `gorm:"many2many:ability_groups;"  json:"groups"`
 }
 
 type NewAbility struct {

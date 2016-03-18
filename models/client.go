@@ -14,7 +14,7 @@ type Client struct {
 	Name            string `json:"name"`
 	ClientID        string `json:"client_id"`
 	ClientSecret    string `json:"client_secret"`
-	Groups          []Group `gorm:"many2many:client_groups;"  json:"-"`
+	Groups          []Group `gorm:"many2many:client_groups;"  json:"groups"`
 }
 
 type NewClient struct {
