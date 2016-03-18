@@ -26,6 +26,32 @@ func Init(settings map[string]interface{}) error {
 }
 
 func migrations() {
+	// User
 	Database.AutoMigrate(&models.User{})
 	Database.Model(&models.User{}).AddUniqueIndex("idx_user_email", "email")
+
+	user := models.User{}
+	Database.Where("email = ?", "admin@authenticate.com").First(&user)
+
+	if user.ID == 0 {
+		user.Name = "Administrator"
+		user.SetEmail("admin@authenticate.com")
+		user.SetPassword("admin")
+		Database.Create(&user)
+	}
+
+	// Group
+	Database.AutoMigrate(&models.Group{})
+	Database.Model(&models.Group{}).AddUniqueIndex("idx_group_name", "name")
+
+	group := models.Group{}
+	Database.Where("name = ?", "Administrators").First(&group)
+
+	if group.ID == 0 {
+		group.Name = "Administrators"
+		group.Description = "Administrators of authentication"
+		Database.Create(&group)
+
+		Database.Model(&group).Association("Users").Append(user)
+	}
 }

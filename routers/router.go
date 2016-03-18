@@ -33,5 +33,6 @@ func Init() *mux.Router {
 	router := mux.NewRouter()
 	router = SetHelloRoutes(router)
 	router = SetUsersRoutes(router)
+	router = SetGroupsRoutes(router)
 	return router
 }

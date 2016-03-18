@@ -28,6 +28,8 @@ type User struct {
 	Name            string `json:"name"`
 	Email           string `json:"email"`
 	EncryptPassword string `json:"-"`
+
+	Groups          []Group `gorm:"many2many:user_groups;"   json:"-"`
 }
 
 type NewUser struct {
