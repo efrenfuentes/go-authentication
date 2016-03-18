@@ -2,23 +2,11 @@ package models
 
 import (
 	"errors"
-	"math/rand"
 	"regexp"
 	"time"
 
 	"github.com/efrenfuentes/go-authentication/core/crypt"
 )
-
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func randStringBytes(n int) string {
-	rand.Seed(time.Now().UnixNano())
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
-	}
-	return string(b)
-}
 
 type User struct {
 	ID        uint
@@ -39,7 +27,7 @@ type NewUser struct {
 }
 
 func (u *User) SetPassword(password string) {
-	u.EncryptPassword = crypt.Crypt(password, randStringBytes(2))
+	u.EncryptPassword = crypt.Crypt(password, crypt.RandStringBytes(2))
 }
 
 func (u *User) SetEmail(email string) error {

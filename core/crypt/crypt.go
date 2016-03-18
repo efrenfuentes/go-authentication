@@ -5,6 +5,8 @@ package crypt
 
 import (
 	"bytes"
+	"math/rand"
+	"time"
 )
 
 var PC1_C = []byte{
@@ -274,4 +276,15 @@ func Crypt(key, salt string) string {
 	iobuf[i+2] = 0
 
 	return string(bytes.Replace(iobuf, []byte{0x00}, []byte{}, -1))
+}
+
+const charactersBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-+_="
+
+func RandStringBytes(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = charactersBytes[rand.Intn(len(charactersBytes))]
+	}
+	return string(b)
 }
