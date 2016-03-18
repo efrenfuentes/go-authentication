@@ -17,7 +17,7 @@ func GetAllAbilities(w http.ResponseWriter, r *http.Request) {
 
 	abilities := []models.Ability{}
 
-	database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&abilities)
+	database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&abilities)
 
 	json.NewEncoder(w).Encode(abilities)
 }
@@ -35,7 +35,7 @@ func GetAbility(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&ability, id)
+		database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&ability, id)
 
 		if ability.ID == 0 {
 			message := models.APIMessage{"Ability not found"}
@@ -68,9 +68,9 @@ func CreateAbility(w http.ResponseWriter, r *http.Request) {
 		var ability models.Ability
 		ability.Name = newAbility.Name
 
-		database.Database.Create(&ability)
+		database.DB.Create(&ability)
 
-		if database.Database.NewRecord(ability) {
+		if database.DB.NewRecord(ability) {
 			message := models.APIMessage{"Error creating ability"}
 
 			json.NewEncoder(w).Encode(message)
@@ -95,7 +95,7 @@ func UpdateAbility(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(message)
 	} else {
 
-		database.Database.First(&ability, id)
+		database.DB.First(&ability, id)
 
 		if ability.ID == 0 {
 			message := models.APIMessage{"Ability not found"}
@@ -118,7 +118,7 @@ func UpdateAbility(w http.ResponseWriter, r *http.Request) {
 			} else {
 				ability.Name = newAbility.Name
 
-				database.Database.Save(&ability)
+				database.DB.Save(&ability)
 
 				json.NewEncoder(w).Encode(ability)
 			}
@@ -139,13 +139,13 @@ func DeleteAbility(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.First(&ability, id)
+		database.DB.First(&ability, id)
 
 		if ability.ID == 0 {
 			message := models.APIMessage{"Ability not found"}
 			json.NewEncoder(w).Encode(message)
 		} else {
-			database.Database.Delete(&ability)
+			database.DB.Delete(&ability)
 			message := models.APIMessage{"Ability successful deleted"}
 			json.NewEncoder(w).Encode(message)
 		}

@@ -17,7 +17,7 @@ func GetAllGroups(w http.ResponseWriter, r *http.Request) {
 
 	groups := []models.Group{}
 
-	database.Database.Preload("Users").Preload("Clients").Preload("Abilities").Find(&groups)
+	database.DB.Preload("Users").Preload("Clients").Preload("Abilities").Find(&groups)
 
 	json.NewEncoder(w).Encode(groups)
 }
@@ -35,7 +35,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.Preload("Users").Preload("Clients").Preload("Abilities").First(&group, id)
+		database.DB.Preload("Users").Preload("Clients").Preload("Abilities").First(&group, id)
 
 		if group.ID == 0 {
 			message := models.APIMessage{"Group not found"}
@@ -69,9 +69,9 @@ func CreateGroup(w http.ResponseWriter, r *http.Request) {
 		group.Name = newGroup.Name
 		group.Description = newGroup.Description
 
-		database.Database.Create(&group)
+		database.DB.Create(&group)
 
-		if database.Database.NewRecord(group) {
+		if database.DB.NewRecord(group) {
 			message := models.APIMessage{"Error creating group"}
 
 			json.NewEncoder(w).Encode(message)
@@ -96,7 +96,7 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(message)
 	} else {
 
-		database.Database.First(&group, id)
+		database.DB.First(&group, id)
 
 		if group.ID == 0 {
 			message := models.APIMessage{"Group not found"}
@@ -120,7 +120,7 @@ func UpdateGroup(w http.ResponseWriter, r *http.Request) {
 				group.Name = newGroup.Name
 				group.Description = newGroup.Description
 
-				database.Database.Save(&group)
+				database.DB.Save(&group)
 
 				json.NewEncoder(w).Encode(group)
 			}
@@ -141,13 +141,13 @@ func DeleteGroup(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.First(&group, id)
+		database.DB.First(&group, id)
 
 		if group.ID == 0 {
 			message := models.APIMessage{"Group not found"}
 			json.NewEncoder(w).Encode(message)
 		} else {
-			database.Database.Delete(&group)
+			database.DB.Delete(&group)
 			message := models.APIMessage{"Group successful deleted"}
 			json.NewEncoder(w).Encode(message)
 		}

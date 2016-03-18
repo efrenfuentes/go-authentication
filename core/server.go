@@ -6,6 +6,7 @@ import (
 
 	"github.com/efrenfuentes/go-authentication/core/settings"
 	"github.com/efrenfuentes/go-authentication/database"
+	"github.com/efrenfuentes/go-authentication/models"
 	"github.com/efrenfuentes/go-authentication/routers"
 )
 
@@ -14,6 +15,7 @@ type Server struct{}
 func (s *Server) Run() {
 	settings.Init()
 	database.Init(settings.Get()["database"].(map[string]interface{}))
+	models.Migrations()
 	routes := routers.Init()
 
 	mySettings := settings.Get()

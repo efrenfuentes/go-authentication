@@ -17,7 +17,7 @@ func GetAllClients(w http.ResponseWriter, r *http.Request) {
 
 	clients := []models.Client{}
 
-	database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&clients)
+	database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&clients)
 
 	json.NewEncoder(w).Encode(clients)
 }
@@ -35,7 +35,7 @@ func GetClient(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&client, id)
+		database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&client, id)
 
 		if client.ID == 0 {
 			message := models.APIMessage{"Client not found"}
@@ -69,9 +69,9 @@ func CreateClient(w http.ResponseWriter, r *http.Request) {
 		client.Name = newClient.Name
 		client.GenerateKeys()
 
-		database.Database.Create(&client)
+		database.DB.Create(&client)
 
-		if database.Database.NewRecord(client) {
+		if database.DB.NewRecord(client) {
 			message := models.APIMessage{"Error creating client"}
 
 			json.NewEncoder(w).Encode(message)
@@ -96,7 +96,7 @@ func UpdateClient(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(message)
 	} else {
 
-		database.Database.First(&client, id)
+		database.DB.First(&client, id)
 
 		if client.ID == 0 {
 			message := models.APIMessage{"Client not found"}
@@ -119,7 +119,7 @@ func UpdateClient(w http.ResponseWriter, r *http.Request) {
 			} else {
 				client.Name = newClient.Name
 
-				database.Database.Save(&client)
+				database.DB.Save(&client)
 
 				json.NewEncoder(w).Encode(client)
 			}
@@ -140,13 +140,13 @@ func DeleteClient(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.First(&client, id)
+		database.DB.First(&client, id)
 
 		if client.ID == 0 {
 			message := models.APIMessage{"Client not found"}
 			json.NewEncoder(w).Encode(message)
 		} else {
-			database.Database.Delete(&client)
+			database.DB.Delete(&client)
 			message := models.APIMessage{"Client successful deleted"}
 			json.NewEncoder(w).Encode(message)
 		}

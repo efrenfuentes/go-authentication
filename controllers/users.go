@@ -18,7 +18,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	users := []models.User{}
 
-	database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&users)
+	database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&users)
 
 	json.NewEncoder(w).Encode(users)
 }
@@ -36,7 +36,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&user, id)
+		database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&user, id)
 
 		if user.ID == 0 {
 			message := models.APIMessage{"User not found"}
@@ -71,9 +71,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		user.SetEmail(newUser.Email)
 		user.SetPassword(newUser.Password)
 
-		database.Database.Create(&user)
+		database.DB.Create(&user)
 
-		if database.Database.NewRecord(user) {
+		if database.DB.NewRecord(user) {
 			message := models.APIMessage{"Error creating user"}
 
 			json.NewEncoder(w).Encode(message)
@@ -98,7 +98,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(message)
 	} else {
 
-		database.Database.First(&user, id)
+		database.DB.First(&user, id)
 
 		if user.ID == 0 {
 			message := models.APIMessage{"User not found"}
@@ -123,7 +123,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 				user.SetEmail(newUser.Email)
 				user.SetPassword(newUser.Password)
 
-				database.Database.Save(&user)
+				database.DB.Save(&user)
 
 				json.NewEncoder(w).Encode(user)
 			}
@@ -144,13 +144,13 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.Database.First(&user, id)
+		database.DB.First(&user, id)
 
 		if user.ID == 0 {
 			message := models.APIMessage{"User not found"}
 			json.NewEncoder(w).Encode(message)
 		} else {
-			database.Database.Delete(&user)
+			database.DB.Delete(&user)
 			message := models.APIMessage{"User successful deleted"}
 			json.NewEncoder(w).Encode(message)
 		}
@@ -178,7 +178,7 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var user models.User
 
-		database.Database.Where(&models.User{Email: newUser.Email}).First(&user)
+		database.DB.Where(&models.User{Email: newUser.Email}).First(&user)
 
 		if user.ID == 0 {
 			message := models.APIMessage{"User not found"}
