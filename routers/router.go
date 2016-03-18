@@ -34,5 +34,6 @@ func Init() *mux.Router {
 	router = SetHelloRoutes(router)
 	router = SetUsersRoutes(router)
 	router = SetGroupsRoutes(router)
+	router = SetClientsRoutes(router)
 	return router
 }

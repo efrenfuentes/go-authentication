@@ -54,4 +54,19 @@ func migrations() {
 
 		Database.Model(&group).Association("Users").Append(user)
 	}
+
+	// Client
+	Database.AutoMigrate(&models.Client{})
+	Database.Model(&models.Client{}).AddUniqueIndex("idx_client_name", "name")
+
+	client := models.Client{}
+	Database.Where("name = ?", "Go-Authenticate").First(&client)
+
+	if client.ID == 0 {
+		client.Name = "Go-Authenticate"
+		client.GenerateKeys()
+		Database.Create(&client)
+
+		Database.Model(&client).Association("Groups").Append(group)
+	}
 }
