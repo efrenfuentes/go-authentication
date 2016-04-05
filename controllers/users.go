@@ -160,7 +160,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	var newUser models.NewUser
+	var authUser models.AuthUser
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048676))
 
@@ -172,25 +172,25 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if err := json.Unmarshal(body, &newUser); err != nil {
+	if err := json.Unmarshal(body, &authUser); err != nil {
 		message := models.APIMessage{"Input format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
 		var user models.User
 
-		database.DB.Where(&models.User{Email: newUser.Email}).First(&user)
+		database.DB.Where(&models.User{Email: authUser.Email}).Preload("Groups.Clients").First(&user)
 
 		if user.ID == 0 {
 			message := models.APIMessage{"User not found"}
 
 			json.NewEncoder(w).Encode(message)
 		} else {
-			if user.Authenticate(newUser.Email, newUser.Password) {
+			if user.Authenticate(authUser.Email, authUser.Password, authUser.ClientSecret) {
 				token := jwt.CreateToken(user)
 				apiToken := jwt.APIToken{token}
 				json.NewEncoder(w).Encode(apiToken)
 			} else {
-				message := models.APIMessage{"Email or password invalid"}
+				message := models.APIMessage{"Client key, email or password invalid"}
 
 				json.NewEncoder(w).Encode(message)
 			}

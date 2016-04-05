@@ -17,13 +17,20 @@ type User struct {
 	Email           string `json:"email"`
 	EncryptPassword string `json:"-"`
 
-	Groups          []Group `gorm:"many2many:user_groups;"   json:"groups"`
+	Groups []Group `gorm:"many2many:user_groups;"   json:"groups"`
 }
 
 type NewUser struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type AuthUser struct {
+	Name         string `json:"name"`
+	Email        string `json:"email"`
+	Password     string `json:"password"`
+	ClientSecret string `json:"client_secret"`
 }
 
 func (u *User) SetPassword(password string) {
@@ -37,15 +44,27 @@ func (u *User) SetEmail(email string) error {
 	if isValid {
 		u.Email = email
 		return nil
-	} else {
-		return errors.New("Email format is invalid " + email)
 	}
+
+	return errors.New("Email format is invalid " + email)
 }
 
-func (u User) Authenticate(email, password string) bool {
+func (u User) Authenticate(email, password, secretKey string) bool {
 	salt := u.EncryptPassword[0:2]
 
 	encrypted := crypt.Crypt(password, salt)
 
-	return (email == u.Email) && (encrypted == u.EncryptPassword)
+	return (email == u.Email) && (encrypted == u.EncryptPassword) && u.HaveClientAccess(secretKey)
+}
+
+func (u User) HaveClientAccess(secretKey string) bool {
+	for _, group := range u.Groups {
+		for _, client := range group.Clients {
+			if secretKey == client.ClientSecret {
+				return true
+			}
+		}
+	}
+
+	return false
 }
