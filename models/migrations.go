@@ -64,6 +64,14 @@ func Migrations() {
 	}
 
 	ability = Ability{}
+	database.DB.Where("name = ?", "read_users").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "read_users"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
 	database.DB.Where("name = ?", "create_user").First(&ability)
 
 	if ability.ID == 0 {
@@ -84,6 +92,14 @@ func Migrations() {
 
 	if ability.ID == 0 {
 		ability.Name = "delete_user"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "read_clients").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "read_clients"
 		database.DB.Create(&ability)
 	}
 
@@ -112,6 +128,14 @@ func Migrations() {
 	}
 
 	ability = Ability{}
+	database.DB.Where("name = ?", "read_groups").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "read_groups"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
 	database.DB.Where("name = ?", "create_group").First(&ability)
 
 	if ability.ID == 0 {
@@ -132,6 +156,14 @@ func Migrations() {
 
 	if ability.ID == 0 {
 		ability.Name = "delete_group"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "read_abilities").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "read_abilities"
 		database.DB.Create(&ability)
 	}
 
