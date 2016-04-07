@@ -2,7 +2,8 @@ package models
 
 import "github.com/efrenfuentes/go-authentication/database"
 
-
+// Migrations creates data tables and records for admin user,
+// base client, groups and abilities
 func Migrations() {
 	// User
 	database.DB.AutoMigrate(&User{})
@@ -56,10 +57,105 @@ func Migrations() {
 	database.DB.Where("name = ?", "all").First(&ability)
 
 	if ability.ID == 0 {
-		ability.Name = "All"
+		ability.Name = "all"
 		database.DB.Create(&ability)
 
 		database.DB.Model(&ability).Association("Groups").Append(group)
 	}
-}
 
+	ability = Ability{}
+	database.DB.Where("name = ?", "create_user").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "create_user"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "update_user").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "update_user"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "delete_user").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "delete_user"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "create_client").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "create_client"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "update_client").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "update_client"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "delete_client").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "delete_client"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "create_group").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "create_group"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "update_group").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "update_group"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "delete_group").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "delete_group"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "create_ability").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "create_ability"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "update_ability").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "update_ability"
+		database.DB.Create(&ability)
+	}
+
+	ability = Ability{}
+	database.DB.Where("name = ?", "delete_ability").First(&ability)
+
+	if ability.ID == 0 {
+		ability.Name = "delete_ability"
+		database.DB.Create(&ability)
+	}
+}
