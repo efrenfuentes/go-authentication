@@ -1,11 +1,17 @@
 package models
 
-import "github.com/efrenfuentes/go-authentication/database"
+import (
+	"fmt"
+
+	"github.com/efrenfuentes/go-authentication/database"
+)
 
 // Migrations creates data tables and records for admin user,
 // base client, groups and abilities
 func Migrations() {
+	fmt.Println("Starting migrations...")
 	// User
+	fmt.Println("    creating table users...")
 	database.DB.AutoMigrate(&User{})
 	database.DB.Model(&User{}).AddUniqueIndex("idx_user_email", "email")
 
@@ -20,6 +26,7 @@ func Migrations() {
 	}
 
 	// Group
+	fmt.Println("    creating table groups...")
 	database.DB.AutoMigrate(&Group{})
 	database.DB.Model(&Group{}).AddUniqueIndex("idx_group_name", "name")
 
@@ -35,6 +42,7 @@ func Migrations() {
 	}
 
 	// Client
+	fmt.Println("    creating table clients...")
 	database.DB.AutoMigrate(&Client{})
 	database.DB.Model(&Client{}).AddUniqueIndex("idx_client_name", "name")
 
@@ -50,6 +58,7 @@ func Migrations() {
 	}
 
 	// Ability
+	fmt.Println("    creating table abilities...")
 	database.DB.AutoMigrate(&Ability{})
 	database.DB.Model(&Ability{}).AddUniqueIndex("idx_ability_name", "name")
 

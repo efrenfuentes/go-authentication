@@ -15,7 +15,6 @@ type Server struct{}
 func (s *Server) Run() {
 	settings.Init()
 	database.Init(settings.Get()["database"].(map[string]interface{}))
-	models.Migrations()
 	routes := routers.Init()
 
 	mySettings := settings.Get()
@@ -30,4 +29,10 @@ func (s *Server) Run() {
 
 	http.Handle("/", routes)
 	http.ListenAndServe(listen_in, nil)
+}
+
+func (s *Server) Migrations() {
+	settings.Init()
+	database.Init(settings.Get()["database"].(map[string]interface{}))
+	models.Migrations()
 }
