@@ -11,14 +11,15 @@ type Client struct {
 	CreatedAt *time.Time `json:"created_at"`
 	UpdatedAt *time.Time `json:"updated_at"`
 
-	Name            string `json:"name"`
-	ClientID        string `json:"client_id"`
-	ClientSecret    string `json:"client_secret"`
-	Groups          []Group `gorm:"many2many:client_groups;"  json:"groups"`
+	Name         string    `json:"name"`
+	ClientID     string    `json:"client_id"`
+	ClientSecret string    `json:"client_secret"`
+	Groups       []Group   `gorm:"many2many:client_groups;"  json:"groups"`
+	Abilities    []Ability `gorm:"many2many:ability_clients;"  json:"abilities"`
 }
 
 type NewClient struct {
-	Name            string `json:"name"`
+	Name string `json:"name"`
 }
 
 func (c *Client) GenerateKeys() {

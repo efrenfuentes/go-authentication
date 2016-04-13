@@ -80,10 +80,8 @@ func (u User) HasClientAccess(secretKey string) bool {
 // HasAbility checks if user has a specific ability
 func (u User) HasAbility(abilityName string) bool {
 	for _, group := range u.Groups {
-		for _, ability := range group.Abilities {
-			if (abilityName == ability.Name) || (ability.Name == "all") {
-				return true
-			}
+		if group.HasAbility(abilityName) {
+			return true
 		}
 	}
 

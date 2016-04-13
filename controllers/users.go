@@ -18,7 +18,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	users := []models.User{}
 
-	database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&users)
+	database.DB.Find(&users)
 
 	json.NewEncoder(w).Encode(users)
 }
@@ -36,7 +36,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&user, id)
+		database.DB.Preload("Groups").Preload("Groups.Clients").First(&user, id)
 
 		if user.ID == 0 {
 			message := models.APIMessage{"User not found"}

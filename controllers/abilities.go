@@ -17,7 +17,7 @@ func GetAllAbilities(w http.ResponseWriter, r *http.Request) {
 
 	abilities := []models.Ability{}
 
-	database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").Find(&abilities)
+	database.DB.Find(&abilities)
 
 	json.NewEncoder(w).Encode(abilities)
 }
@@ -35,7 +35,7 @@ func GetAbility(w http.ResponseWriter, r *http.Request) {
 		message := models.APIMessage{"Id format invalid"}
 		json.NewEncoder(w).Encode(message)
 	} else {
-		database.DB.Preload("Groups.Users").Preload("Groups.Clients").Preload("Groups.Abilities").First(&ability, id)
+		database.DB.Preload("Clients").First(&ability, id)
 
 		if ability.ID == 0 {
 			message := models.APIMessage{"Ability not found"}

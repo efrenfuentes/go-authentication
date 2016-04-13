@@ -69,7 +69,7 @@ func Migrations() {
 		ability.Name = "all"
 		database.DB.Create(&ability)
 
-		database.DB.Model(&ability).Association("Groups").Append(group)
+		database.DB.Model(&ability).Association("Clients").Append(client)
 	}
 
 	ability = Ability{}
